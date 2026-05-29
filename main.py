@@ -17,7 +17,12 @@ FILE_NAME = "expenses.csv"
 
 class ExpenseTracker(BoxLayout):
     def __init__(self, **kwargs):
-        super().__init__(orientation="vertical", padding=15, spacing=10, **kwargs)
+        super().__init__(
+            orientation="vertical",
+            padding=15,
+            spacing=10,
+            **kwargs
+        )
 
         self.create_csv_file()
 
@@ -132,7 +137,9 @@ class ExpenseTracker(BoxLayout):
             spacing=5,
             size_hint_y=None
         )
-        self.expense_list.bind(minimum_height=self.expense_list.setter("height"))
+        self.expense_list.bind(
+            minimum_height=self.expense_list.setter("height")
+        )
 
         self.scroll.add_widget(self.expense_list)
         self.add_widget(self.scroll)
@@ -178,13 +185,19 @@ class ExpenseTracker(BoxLayout):
         amount_text = self.amount_input.text.strip()
 
         if not category or not description or not amount_text:
-            self.show_popup("Missing Information", "Please fill in all fields.")
+            self.show_popup(
+                "Missing Information",
+                "Please fill in all fields."
+            )
             return
 
         try:
             amount = float(amount_text)
         except ValueError:
-            self.show_popup("Invalid Amount", "Please enter a valid amount.")
+            self.show_popup(
+                "Invalid Amount",
+                "Please enter a valid amount."
+            )
             return
 
         date = datetime.now().strftime("%Y-%m-%d")
@@ -229,7 +242,10 @@ class ExpenseTracker(BoxLayout):
                 except ValueError:
                     amount_float = 0
 
-                expense_text = f"{date} | {category} | {description} | {amount_float:.2f}"
+                expense_text = (
+                    f"{date} | {category} | "
+                    f"{description} | {amount_float:.2f}"
+                )
 
                 expense_item = Label(
                     text=expense_text,
@@ -252,7 +268,11 @@ class ExpenseTracker(BoxLayout):
             for row in reader:
                 if len(row) == 4:
                     try:
-                        expense_date = datetime.strptime(row[0], "%Y-%m-%d").date()
+                        expense_date = datetime.strptime(
+                            row[0],
+                            "%Y-%m-%d"
+                        ).date()
+
                         amount = float(row[3])
 
                         expenses.append({
@@ -283,7 +303,10 @@ class ExpenseTracker(BoxLayout):
         start_of_week = today - timedelta(days=today.weekday())
         end_of_week = start_of_week + timedelta(days=6)
 
-        total = self.calculate_total_between_dates(start_of_week, end_of_week)
+        total = self.calculate_total_between_dates(
+            start_of_week,
+            end_of_week
+        )
 
         self.summary_label.text = (
             f"This Week: {total:.2f}\n"
@@ -307,7 +330,10 @@ class ExpenseTracker(BoxLayout):
                 day=1
             ) - timedelta(days=1)
 
-        total = self.calculate_total_between_dates(start_of_month, end_of_month)
+        total = self.calculate_total_between_dates(
+            start_of_month,
+            end_of_month
+        )
 
         self.summary_label.text = (
             f"This Month: {total:.2f}\n"
@@ -320,7 +346,10 @@ class ExpenseTracker(BoxLayout):
         start_of_year = today.replace(month=1, day=1)
         end_of_year = today.replace(month=12, day=31)
 
-        total = self.calculate_total_between_dates(start_of_year, end_of_year)
+        total = self.calculate_total_between_dates(
+            start_of_year,
+            end_of_year
+        )
 
         self.summary_label.text = (
             f"This Year: {total:.2f}\n"
@@ -332,8 +361,16 @@ class ExpenseTracker(BoxLayout):
         end_date_text = self.end_date_input.text.strip()
 
         try:
-            start_date = datetime.strptime(start_date_text, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_text, "%Y-%m-%d").date()
+            start_date = datetime.strptime(
+                start_date_text,
+                "%Y-%m-%d"
+            ).date()
+
+            end_date = datetime.strptime(
+                end_date_text,
+                "%Y-%m-%d"
+            ).date()
+
         except ValueError:
             self.show_popup(
                 "Invalid Date",
