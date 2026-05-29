@@ -14,18 +14,37 @@ jobs:
       - name: Checkout files
         uses: actions/checkout@v4
 
+      - name: Show project files
+        run: |
+          pwd
+          ls -la
+          echo "----- buildozer.spec -----"
+          cat buildozer.spec
+
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y python3-pip python3-setuptools python3-venv git zip unzip openjdk-17-jdk
-          python3 -m pip install --upgrade pip
-          python3 -m pip install buildozer cython
+          python3 -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install buildozer cython virtualenv
+
+      - name: Accept Android SDK licenses
+        run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Clean old Buildozer files
+        run: |
+          rm -rf .buildozer
+          rm -rf bin
 
       - name: Build APK
         run: |
           buildozer -v android debug
 
       - name: Upload APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: expense-tracker-apk
