@@ -52,7 +52,6 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
           python3  -m pip install git+https://github.com/kivy/buildozer.git@master
-          python3 -m pip install buildozer cython virtualenv
 
       - name: Accept Android SDK licenses
         run: |
