@@ -16,9 +16,12 @@ fullscreen = 0
 
 android.api = 34
 android.minapi = 23
-android.ndk = 25b
+
+# Let Buildozer handle the exact NDK pairing automatically
+# android.ndk = 25b
+
 android.accept_sdk_license = True
-android.archs = arm64-v8a
+android.archs = armeabi-v7a, arm64-v8a
 
 [buildozer]
 
