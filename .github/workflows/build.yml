@@ -14,20 +14,43 @@ jobs:
       - name: Checkout files
         uses: actions/checkout@v4
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install -y \
-            git zip unzip openjdk-17-jdk python3-pip python3-setuptools \
-            python3-venv python3-dev build-essential autoconf automake \
-            libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo6 libffi-dev libssl-dev cmake gettext patch
+            git \
+            zip \
+            unzip \
+            openjdk-17-jdk \
+            python3-pip \
+            python3-setuptools \
+            python3-venv \
+            python3-dev \
+            build-essential \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo6 \
+            libffi-dev \
+            libssl-dev \
+            cmake \
+            gettext \
+            patch
 
       - name: Install python-for-android
         run: |
-          python3 -m pip install --upgrade pip setuptools wheel
-          python3 -m pip install cython virtualenv
-          python3 -m pip install git+https://github.com/kivy/python-for-android.git
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install "Cython<3" virtualenv
+          python -m pip install --no-build-isolation git+https://github.com/kivy/python-for-android.git
 
       - name: Create Android SDK folders
         run: |
@@ -48,6 +71,7 @@ jobs:
             --minsdk=23
 
       - name: Upload APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: expense-tracker-apk
