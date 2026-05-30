@@ -84,7 +84,7 @@ jobs:
             --name "Expense Tracker" \
             --version 1.0 \
             --bootstrap=sdl2 \
-            --requirements=python3==3.11.6,hostpython3==3.11.6,kivy \
+            --requirements=python3==3.11.6,hostpython3==3.11.6,kivy==2.2.1 \
             --arch=arm64-v8a \
             --android-api=34 \
             --minsdk=23 \
