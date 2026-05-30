@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK Without Buildozer
 
 on:
   workflow_dispatch:
@@ -14,72 +14,41 @@ jobs:
       - name: Checkout files
         uses: actions/checkout@v4
 
-      - name: Show project files
-        run: |
-          pwd
-          ls -la
-          echo "----- buildozer.spec -----"
-          cat buildozer.spec
-
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install -y \
-            git \
-            zip \
-            unzip \
-            openjdk-17-jdk \
-            python3-pip \
-            python3-setuptools \
-            python3-venv \
-            python3-dev \
-            build-essential \
-            autoconf \
-            automake \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo6 \
-            libffi-dev \
-            libssl-dev \
-            cmake \
-            gettext \
-            patch
+            git zip unzip openjdk-17-jdk python3-pip python3-setuptools \
+            python3-venv python3-dev build-essential autoconf automake \
+            libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo6 libffi-dev libssl-dev cmake gettext patch
 
-      - name: Install Latest Buildozer from Source
+      - name: Install python-for-android
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
-          python3  -m pip install git+https://github.com/kivy/buildozer.git@master
-          
-      - name: Build with Buildozer (Verbose Mode)
-        run: |
-          # Force buildozer to use python-for-android's live master branch
-          buildozer -v android debug
+          python3 -m pip install cython virtualenv
+          python3 -m pip install git+https://github.com/kivy/python-for-android.git
 
-      - name: Accept Android SDK licenses
+      - name: Create Android SDK folders
         run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          mkdir -p "$HOME/.android"
+          touch "$HOME/.android/repositories.cfg"
 
-      - name: Clear local target cache
+      - name: Build APK with python-for-android
         run: |
-          buildozer android clean
-
-      - name: Clean old Buildozer files
-        run: |
-          rm -rf .buildozer
-          rm -rf bin
-
-      - name: Build APK
-        run: |
-          buildozer -v android debug
+          p4a apk \
+            --private . \
+            --package=org.example.expensetracker \
+            --name "Expense Tracker" \
+            --version 1.0 \
+            --bootstrap=sdl2 \
+            --requirements=python3,kivy \
+            --arch=arm64-v8a \
+            --android-api=34 \
+            --minsdk=23
 
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: expense-tracker-apk
-          path: bin/*.apk
+          path: ./*.apk
