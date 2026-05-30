@@ -68,7 +68,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "Cython<3" virtualenv
-          python -m pip install python-for-android==2024.01.21
+          python -m pip install --no-build-isolation git+https://github.com/kivy/python-for-android.git
 
       - name: Clean old p4a files
         run: |
