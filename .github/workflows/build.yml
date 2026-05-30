@@ -64,6 +64,10 @@ jobs:
           touch ~/.android/repositories.cfg
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+      - name: Clear local target cache
+        run: |
+          buildozer android clean
+
       - name: Clean old Buildozer files
         run: |
           rm -rf .buildozer
