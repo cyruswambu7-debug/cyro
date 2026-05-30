@@ -48,9 +48,10 @@ jobs:
             gettext \
             patch
 
-      - name: Install Buildozer
+      - name: Install Latest Buildozer from Source
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
+          ptthon  -m pip install git+https://github.com/kivy/buildozer.git@master
           python3 -m pip install buildozer cython virtualenv
 
       - name: Accept Android SDK licenses
