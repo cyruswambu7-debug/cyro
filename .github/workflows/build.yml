@@ -10,6 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-22.04
 
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/25.2.9519653
+
     steps:
       - name: Checkout files
         uses: actions/checkout@v4
@@ -47,7 +52,19 @@ jobs:
             patch \
             ccache
 
-      - name: Install python-for-android stable version
+      - name: Install Android NDK 25
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
+
+      - name: Check Android tools
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
+          ls -la "$ANDROID_HOME/ndk"
+          ls -la "$ANDROID_NDK_HOME"
+
+      - name: Install python-for-android
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "Cython<3" virtualenv
@@ -71,7 +88,8 @@ jobs:
             --arch=arm64-v8a \
             --android-api=34 \
             --minsdk=23 \
-            --ndk-api=23
+            --ndk-api=23 \
+            --ndk-dir="$ANDROID_NDK_HOME"
 
       - name: Upload APK
         if: always()
