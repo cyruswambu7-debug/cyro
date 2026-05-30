@@ -52,7 +52,7 @@ jobs:
             patch \
             ccache
 
-      - name: Install Android NDK 25
+      - name: Install Android SDK and NDK 25
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0" "ndk;25.2.9519653"
@@ -67,7 +67,7 @@ jobs:
       - name: Install python-for-android
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "Cython<3" virtualenv
+          python -m pip install "Cython==0.29.36" virtualenv
           python -m pip install --no-build-isolation git+https://github.com/kivy/python-for-android.git
 
       - name: Clean old p4a files
@@ -84,12 +84,13 @@ jobs:
             --name "Expense Tracker" \
             --version 1.0 \
             --bootstrap=sdl2 \
-            --requirements=python3,kivy \
+            --requirements=python3==3.11.6,hostpython3==3.11.6,kivy \
             --arch=arm64-v8a \
             --android-api=34 \
             --minsdk=23 \
             --ndk-api=23 \
-            --ndk-dir="$ANDROID_NDK_HOME"
+            --ndk-dir="$ANDROID_NDK_HOME" \
+            --debug
 
       - name: Upload APK
         if: always()
